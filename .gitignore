@@ -1,0 +1,7 @@
+.idea
+*.txt
+*.css
+*.mp3
+out
+gen
+/clear_css.php
