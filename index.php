@@ -51,8 +51,10 @@
 
     function progress($total, $step)
     {
+        $total = ceil($total/2);
+        $step = ceil($step/2);
         $completed = str_repeat('#', $step);
-        $left = str_repeat('-', $total - $step);
+        $left = str_repeat('--', $total - $step);
 
         return '[' . $completed . $left . ']<br>';
     }
@@ -63,6 +65,10 @@
             mkdir($dir, 0777, true);
         }
     }
+
+    #
+    # #################################################################################################################
+    #
 
     $time = microtime(1);
     $dir = $_SERVER['DOCUMENT_ROOT'] . '/downloaded';
