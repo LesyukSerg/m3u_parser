@@ -1,3 +1,10 @@
+<?
+    session_start();
+    require "functions.php";
+    $_SESSION['playlist'] = 'Monstercat - Best Of 2016 2017-10-26 10-15.m3u';
+    $playlist = isset($_SESSION['playlist']);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -6,9 +13,10 @@
 
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/m3u.css">
-        <script defer src="/js/jquery.min.js"></script>
-        <script defer src="/js/bootstrap.min.js"></script>
-        <script defer src="/js/my.js"></script>
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/my.js"></script>
+        <script src="/js/functions.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
@@ -18,31 +26,31 @@
                     <h1>m3u Playlist Downloader</h1>
                 </div>
                 <div class="col-xs-12 col-sm-6 text-right">
-                    <button type="button" class="btn btn-primary">Download m3u</button>
-                    <button type="button" class="btn btn-info">Process</button>
-                    <button type="button" class="btn btn-danger">Stop</button>
+                    <button type="button" class="download btn btn-primary <?=($playlist ? 'disabled' : '')?>">Download m3u</button>
+                    <input style="display:none" class="playlist" type="file" onchange="uploadFile($(this))">
+                    <button type="button" class="process btn btn-info <?=(!$playlist ? 'disabled' : '')?>">Process</button>
+                    <button type="button" class="stop btn btn-danger <?=(!$playlist ? 'disabled' : '')?>">Stop</button>
                 </div>
             </div>
-
+            <?
+                show_songs();
+                $s = [0 => 'info', '1' => 'success', 2 => 'danger'];
+            ?>
             <div class="row">
                 <div class="col-xs-12 col-sm-12">
-                    <div class="alert alert-success">
-                        <strong>Success!</strong> Indicates a successful or positive action.
-                    </div>
-
-                    <div class="alert alert-info">
-                        <strong>Info!</strong> Indicates a neutral informative change or action.
-                    </div>
-
-                    <div class="alert alert-warning">
-                        <strong>Warning!</strong> Indicates a warning that might need attention.
-                    </div>
-
-                    <div class="alert alert-danger">
-                        <strong>Danger!</strong> Indicates a dangerous or potentially negative action.
-                    </div>
+                    <? foreach ($_SESSION['songs'] as $song): ?>
+                        <div class="alert alert-<?=$s[$song['status']]?>">
+                            <strong>Info!</strong> <?=$song['name']?>
+                        </div>
+                    <? endforeach; ?>
+                    <div class="alert alert-success"></div>
+                    <div class="alert alert-warning"></div>
+                    <div class="alert alert-danger"></div>
                 </div>
             </div>
         </div>
+        <form id="load_file">
+            <input type="hidden" name="action" value="LOAD_FILE"/>
+        </form>
     </body>
 </html>
