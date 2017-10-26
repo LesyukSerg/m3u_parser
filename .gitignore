@@ -1,8 +1,5 @@
 .idea
 *.txt
-*.css
 *.mp3
-out
-gen
-/clear_css.php
-*.m3u
+downloaded/
+m3u-files/
