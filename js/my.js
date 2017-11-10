@@ -1,16 +1,19 @@
-/**
- * Created by seran on 26.10.2017.
- */
+var stop = 1;
+
 $(document).ready(function () {
     $('.download').on('click', function(){
-        $('.load_file').click();
+        $('.playlist').click();
     });
 
     $('.process').on('click', function(){
-
+        if (!$(this).hasClass("disabled")) {
+            stop = 0;
+            $(this).addClass('disabled');
+            process_start();
+        }
     });
 
     $('.stop').on('click', function(){
-
+        stop = 1;
     });
 });

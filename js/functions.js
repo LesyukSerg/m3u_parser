@@ -3,32 +3,61 @@
  */
 
 function uploadFile(elem) {
-    //var block = elem.parent();
-    //block.find('.wait_for_checking').show();
     var fd = new FormData(document.getElementById("load_file"));
-    //fd.append('num', elem.attr('data-num'));
-    fd.append('file', $("input[name='playlist']")[0].files[0]);
+    fd.append('ajax', 1);
+    fd.append('file', elem[0].files[0]);
 
     $.ajax({
-        url: window.location.href,
+        url: "/process.php",
         type: "POST",
         data: fd,
         enctype: 'multipart/form-data',
         processData: false,  // tell jQuery not to process the data
-        contentType: false   // tell jQuery not to set contentType
-    }).success(function (data) {
-        //block.find('.wait_for_checking').hide();
-        //data = data.split('|');
-
-        if (data[0] != 'OK') {
-            alert(data);
-            block.find("input[name='price_list']").val('');
-        } else {
-            var form = block.find('fieldset');
-            form.find('a, span').remove();
-            form.find('legend').html("Прайс " + elem.attr('data-num') + " загружен:");
-            form.append('<a class="file-icon" href="' + data[1] + '">' + data[2] + '</a><span class="dell_price_list f-left" title="удалить">&#10006;</span>');
-            form.find('.google-button').addClass('f-right');
+        contentType: false,   // tell jQuery not to set contentType
+        success: function(data) {
+            location.reload();
         }
     });
+}
+
+function process_start() {
+    var song = $('.song-item:visible').first();
+    if (song.length) {
+        song.removeClass("alert-info").addClass("alert-warning");
+        process(song, 1);
+    } else {
+        $('.song-container').append('<div class="alert alert-success"><strong>OK</strong> All songs downloaded</div>');
+    }
+}
+
+function process(song, recurs) {
+    if (!stop) {
+        if (!song.hasClass("alert-success")) {
+            var songID = song.data('id');
+
+            $.ajax({
+                url: "/process.php",
+                type: "POST",
+                data: {
+                    ajax: 1,
+                    action: 'getSong',
+                    song: songID
+                },
+                success: function (data) {
+                    if (parseInt(data) > 0) {
+                        song.removeClass("alert-warning").addClass("alert-success");
+                        song.fadeOut(400, process_start);
+                    } else {
+                        alert(data);
+                    }
+                }
+            });
+        } else {
+            song.removeClass("alert-warning").addClass("alert-success");
+            song.fadeOut(400, process_start);
+        }
+    } else {
+        $('.process').removeClass('disabled');
+        alert("Process was stopped");
+    }
 }

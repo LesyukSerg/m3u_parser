@@ -66,18 +66,23 @@
         }
     }
 
-    function show_songs()
+    function show_songs($rebuild = 0)
     {
-        if (isset($_SESSION['playlist'])) {
-            $source = $_SERVER['DOCUMENT_ROOT'] . "/m3u-files/" . $_SESSION['playlist'];
-            $data = file($source);
+        if ($rebuild) {
+            unset($_SESSION['songs']);
+        }
 
+        if (isset($_SESSION['playlist'])) {
+            $source = $_SESSION['playlist'];
+            $data = file($source);
+            $number = 0;
             foreach ($data as $k => $line) {
                 if (strstr($line, '//') || strstr($line, 'http')) {
                     $name = preg_replace("#\#EXTINF\:\d+,#", "", $data[$k - 1]);
-
+                    $name = trim($name);
                     if (!isset($_SESSION['songs'][$name])) {
                         $_SESSION['songs'][$name] = [
+                            'index'  => ++$number,
                             'name'   => $name,
                             'link'   => trim($line),
                             'status' => '0'
@@ -86,4 +91,85 @@
                 }
             }
         }
+    }
+
+    function check_playlist()
+    {
+        $source = $_SERVER['DOCUMENT_ROOT'] . "/m3u-files/";
+        $found = glob($source . "*.m3u");
+
+        if (isset($found[0])) {
+            $_SESSION['playlist'] = $found[0];
+        } else {
+            unset($_SESSION['playlist']);
+        }
+    }
+
+    function load_playlist($file)
+    {
+        $source = $_SERVER['DOCUMENT_ROOT'] . "/m3u-files/";
+
+        if (isset($file['type']) && $file['type'] == 'audio/x-mpegurl') {
+            if (move_uploaded_file($file['tmp_name'], $source . $file['name'])) {
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
+    function get_song($songID, $year = "2017")
+    {
+        $dir = $_SERVER['DOCUMENT_ROOT'] . '/downloaded';
+        check_dir($dir);
+
+        $album = explode(' ', $_SESSION['playlist']);
+        $album = trim($album[0]);
+
+        $song = $_SESSION['songs'][$songID];
+        $_SESSION['songs'][$songID]['status'] = 3;
+
+        $file = $song['name'] . '.mp3';
+        $file = str_replace(["\\", "/", ":"], "", $file);
+
+        if (!file_exists($dir . '/' . $file)) {
+            $songData = curl(trim($song['link']));
+
+            if (file_put_contents($dir . '/' . $file, $songData)) {
+                require_once 'id.php';
+                $id3 = &new MP3_Id(); // создаем объект, считываем данные
+
+                $res = $id3->read($dir . '/' . $file);
+                $songName = explode('-', $song['name']);
+
+                $id3->setTag('track', $song['index']);
+                //echo "Записал тег <b>track</b> - " . ceil($k / 2) . "<br>";
+
+                $id3->setTag('name', trim(end($songName)));
+                //echo "Записал тег <b>name</b> - " . trim(end($song)) . "<br>";
+
+                $id3->setTag('artists', trim($songName[0]));
+                //echo "Записал тег <b>artists</b> - " . trim($song[0]) . "<br>";
+
+                $id3->setTag('year', $year);
+                //echo "Записал тег <b>year</b> - " . $year . "<br>";
+
+                $id3->setTag('album', $album);
+                //echo "Записал тег <b>album</b> - " . $album . "<br>";
+
+                $id3->write();
+                $_SESSION['songs'][$songID]['status'] = 1;
+
+                return filesize($dir . '/' . $file);
+            }
+
+            $_SESSION['songs'][$songID]['status'] = 2;
+
+        } else {
+            $_SESSION['songs'][$songID]['status'] = 1;
+
+            return filesize($dir . '/' . $file);
+        }
+
+        return 0;
     }

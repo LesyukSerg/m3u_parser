@@ -1,6 +1,21 @@
 <?php
     session_start();
     require "functions.php";
+
+    if (isset($_POST['ajax'])) {
+        if (isset($_POST['action'])) {
+            if ($_POST['action'] == 'LOAD') {
+                echo load_playlist($_FILES['file']);
+
+            } elseif ($_POST['action'] == 'getSong') {
+                echo get_song($_POST['song'], date("Y"));
+                var_dump($_SESSION['songs']);
+            }
+        }
+    }
+    die;
+
+
     $time = microtime(1);
     $dir = $_SERVER['DOCUMENT_ROOT'] . '/downloaded';
     check_dir($dir);
