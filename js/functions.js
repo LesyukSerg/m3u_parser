@@ -15,18 +15,38 @@ function uploadFile(elem) {
         processData: false,  // tell jQuery not to process the data
         contentType: false,   // tell jQuery not to set contentType
         success: function(data) {
-            location.reload();
+            if (data === "1") {
+                location.reload();
+            } else {
+                console.log(data);
+            }
         }
     });
 }
 
 function process_start() {
+    var total = $('.song-item').length;
+    var left = $('.song-item:visible').length;
+    var complete = 100 - (left/total)*100;
+    $('.progress-bar').css('width', complete + '%');
+
     var song = $('.song-item:visible').first();
     if (song.length) {
         song.removeClass("alert-info").addClass("alert-warning");
         process(song, 1);
     } else {
         $('.song-container').append('<div class="alert alert-success"><strong>OK</strong> All songs downloaded</div>');
+        $.ajax({
+            url: "/process.php",
+            type: "POST",
+            data: {
+                ajax: 1,
+                action: 'complete'
+            },
+            success: function (data) {
+
+            }
+        });
     }
 }
 

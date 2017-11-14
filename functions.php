@@ -105,12 +105,31 @@
         }
     }
 
+    function move_old_playlist()
+    {
+        $source = $_SERVER['DOCUMENT_ROOT'] . "/m3u-files/";
+
+        if (isset($_SESSION['playlist']) && is_file($_SESSION['playlist'])) {
+            $name = preg_replace("#.*\/([^\/]+)$#", "$1", $_SESSION['playlist']);
+            if (copy($_SESSION['playlist'], $source . 'old/' . $name)) {
+                unlink($_SESSION['playlist']);
+                unset($_SESSION['playlist']);
+            }
+        }
+    }
+
     function load_playlist($file)
     {
         $source = $_SERVER['DOCUMENT_ROOT'] . "/m3u-files/";
 
+        if (isset($_SESSION['playlist']) && is_file($_SESSION['playlist'])) {
+            move_old_playlist();
+        }
+
         if (isset($file['type']) && $file['type'] == 'audio/x-mpegurl') {
             if (move_uploaded_file($file['tmp_name'], $source . $file['name'])) {
+                unset($_SESSION['songs']);
+
                 return 1;
             }
         }
@@ -121,10 +140,10 @@
     function get_song($songID, $year = "2017")
     {
         $dir = $_SERVER['DOCUMENT_ROOT'] . '/downloaded';
-        check_dir($dir);
 
-        $album = explode(' ', $_SESSION['playlist']);
-        $album = trim($album[0]);
+        $album = preg_replace("#.*\/([^\/]+) \d{4}.*#", "$1", $_SESSION['playlist']);
+        $dir .= "/" . $album;
+        check_dir($dir);
 
         $song = $_SESSION['songs'][$songID];
         $_SESSION['songs'][$songID]['status'] = 3;

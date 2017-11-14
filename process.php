@@ -9,7 +9,6 @@
 
             } elseif ($_POST['action'] == 'getSong') {
                 echo get_song($_POST['song'], date("Y"));
-                var_dump($_SESSION['songs']);
             }
         }
     }

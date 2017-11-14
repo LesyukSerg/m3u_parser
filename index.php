@@ -41,6 +41,9 @@
                     <button type="button" class="stop btn btn-danger <?=(!$playlist ? 'disabled' : '')?>">Stop</button>
                 </div>
             </div>
+            <div class="progress">
+                <div class="progress-bar bg-info" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-12 song-container">
                     <? if ($playlist): ?>
