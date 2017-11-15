@@ -8,7 +8,7 @@ function uploadFile(elem) {
     fd.append('file', elem[0].files[0]);
 
     $.ajax({
-        url: window.location.pathname + "/process.php",
+        url: window.location.pathname + "process.php",
         type: "POST",
         data: fd,
         enctype: 'multipart/form-data',
@@ -37,7 +37,7 @@ function process_start() {
     } else {
         $('.song-container').append('<div class="alert alert-success"><strong>OK</strong> All songs downloaded. </div>');
         $.ajax({
-            url: window.location.pathname + "/process.php",
+            url: window.location.pathname + "process.php",
             type: "POST",
             data: {
                 ajax: 1,
@@ -64,7 +64,7 @@ function process(song) {
             var songID = song.data('id');
 
             $.ajax({
-                url: window.location.pathname + "/process.php",
+                url: window.location.pathname + "process.php",
                 type: "POST",
                 data: {
                     ajax: 1,

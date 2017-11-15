@@ -116,7 +116,10 @@
 
         if (isset($_SESSION['playlist']) && is_file($_SESSION['playlist'])) {
             $name = preg_replace("#.*\/([^\/]+)$#", "$1", $_SESSION['playlist']);
-            if (copy($_SESSION['playlist'], $source . 'old/' . $name)) {
+            $old_dir = $source . 'old/';
+            check_dir($old_dir);
+
+            if (copy($_SESSION['playlist'], $old_dir . $name)) {
                 unlink($_SESSION['playlist']);
                 unset($_SESSION['playlist']);
             }
@@ -126,6 +129,7 @@
     function load_playlist($file)
     {
         $source = __DIR__ . "/m3u-files/";
+        check_dir($source);
 
         if (isset($_SESSION['playlist']) && is_file($_SESSION['playlist'])) {
             move_old_playlist();

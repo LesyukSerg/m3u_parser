@@ -497,11 +497,13 @@
             if ($this->debug) print($this->debugbeg . "_read_v1()<HR>\n");
 
             if (!($f = @fopen($this->file, 'rb'))) {
-                return PEAR::raiseError("Unable to open " . $this->file, PEAR_MP3_ID_FNO);
+                $pear = new PEAR();
+                return $pear->raiseError("Unable to open " . $this->file, PEAR_MP3_ID_FNO);
             }
 
             if (fseek($f, -128, SEEK_END) == -1) {
-                return PEAR::raiseError('Unable to see to end - 128 of ' . $this->file, PEAR_MP3_ID_RE);
+                $pear = new PEAR();
+                return $pear->raiseError('Unable to see to end - 128 of ' . $this->file, PEAR_MP3_ID_RE);
             }
 
             $r = fread($f, 128);
@@ -574,7 +576,8 @@
             if ($id3tag['TAG'] == 'TAG') {
                 $id3tag['GENRE'] = $this->getgenre($id3tag['GENRENO']);
             } else {
-                $id3tag = PEAR::raiseError('TAG not found', PEAR_MP3_ID_TNF);
+                $pear = new PEAR();
+                $id3tag = $pear->raiseError('TAG not found', PEAR_MP3_ID_TNF);
             }
             if ($this->debug) print($this->debugend);
 
@@ -595,12 +598,16 @@
             $file = $this->file;
 
             if (!($f = @fopen($file, 'r+b'))) {
-                return PEAR::raiseError("Unable to open " . $file, PEAR_MP3_ID_FNO);
+                $pear = new PEAR();
+
+                return $pear->raiseError("Unable to open " . $file, PEAR_MP3_ID_FNO);
             }
 
             if (fseek($f, -128, SEEK_END) == -1) {
+                $pear = new PEAR();
+
 //        $this->error = 'Unable to see to end - 128 of ' . $file;
-                return PEAR::raiseError("Unable to see to end - 128 of " . $file, PEAR_MP3_ID_RE);
+                return $pear->raiseError("Unable to see to end - 128 of " . $file, PEAR_MP3_ID_RE);
             }
 
             $this->genreno = $this->getgenreno($this->genre, $this->genreno);
@@ -611,14 +618,18 @@
 
             if (!PEAR::isError($this->_decode_v1($r))) {
                 if (fseek($f, -128, SEEK_END) == -1) {
+                    $pear = new PEAR();
+
 //        $this->error = 'Unable to see to end - 128 of ' . $file;
-                    return PEAR::raiseError("Unable to see to end - 128 of " . $file, PEAR_MP3_ID_RE);
+                    return $pear->raiseError("Unable to see to end - 128 of " . $file, PEAR_MP3_ID_RE);
                 }
                 fwrite($f, $newtag);
             } else {
                 if (fseek($f, 0, SEEK_END) == -1) {
+                    $pear = new PEAR();
+
 //        $this->error = 'Unable to see to end of ' . $file;
-                    return PEAR::raiseError("Unable to see to end of " . $file, PEAR_MP3_ID_RE);
+                    return $pear->raiseError("Unable to see to end of " . $file, PEAR_MP3_ID_RE);
                 }
                 fwrite($f, $newtag);
             }
@@ -693,11 +704,15 @@
             $file = $this->file;
 
             if (!($f = fopen($file, 'r+b'))) {
-                return PEAR::raiseError("Unable to open " . $file, PEAR_MP3_ID_FNO);
+                $pear = new PEAR();
+
+                return $pear->raiseError("Unable to open " . $file, PEAR_MP3_ID_FNO);
             }
 
             if (fseek($f, -128, SEEK_END) == -1) {
-                return PEAR::raiseError('Unable to see to end - 128 of ' . $file, PEAR_MP3_ID_RE);
+                $pear = new PEAR();
+
+                return $pear->raiseError('Unable to see to end - 128 of ' . $file, PEAR_MP3_ID_RE);
             }
 
             $r = fread($f, 128);
@@ -731,8 +746,9 @@
 
             if (!($f = fopen($file, 'rb'))) {
                 if ($this->debug) print($this->debugend);
+                $pear = new PEAR();
 
-                return PEAR::raiseError("Unable to open " . $file, PEAR_MP3_ID_FNO);
+                return $pear->raiseError("Unable to open " . $file, PEAR_MP3_ID_FNO);
             }
 
             $this->filesize = filesize($file);
@@ -742,8 +758,9 @@
                     if ($this->debug) echo "Find...\n";
                     if (feof($f)) {
                         if ($this->debug) print($this->debugend);
+                        $pear = new PEAR();
 
-                        return PEAR::raiseError("No mpeg frame found", PEAR_MP3_ID_NOMP3);
+                        return $pear->raiseError("No mpeg frame found", PEAR_MP3_ID_NOMP3);
                     }
                 }
                 fseek($f, ftell($f) - 1); // back up one byte
