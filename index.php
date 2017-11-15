@@ -35,7 +35,13 @@
                     <h1>m3u Playlist Downloader</h1>
                 </div>
                 <div class="col-xs-12 col-sm-6 text-right">
-                    <button type="button" class="download btn btn-primary ">Download m3u</button>
+                    <button type="button" class="download btn btn-primary ">
+                        <? if ($playlist): ?>
+                            Download new m3u
+                        <? else: ?>
+                            Download m3u
+                        <? endif; ?>
+                    </button>
                     <input style="display:none" class="playlist" type="file" onchange="uploadFile($(this))" accept=".m3u">
                     <button type="button" class="process btn btn-info <?=(!$playlist ? 'disabled' : '')?>">Process</button>
                     <button type="button" class="stop btn btn-danger <?=(!$playlist ? 'disabled' : '')?>">Stop</button>
@@ -46,12 +52,17 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-12 song-container">
+                    <div class="loader"></div>
                     <? if ($playlist): ?>
                         <? foreach ($_SESSION['songs'] as $k => $song): ?>
                             <div class="song-item alert alert-<?=$s[$song['status']]?>" data-id="<?=$k?>">
                                 <strong>Info!</strong> <?=$song['name']?>
                             </div>
                         <? endforeach; ?>
+                    <? else: ?>
+                        <div class="song-item alert alert-info">
+                            <strong>Info!</strong> Download .m3u file to start
+                        </div>
                     <? endif; ?>
                 </div>
             </div>

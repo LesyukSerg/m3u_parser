@@ -141,7 +141,7 @@
     {
         $dir = $_SERVER['DOCUMENT_ROOT'] . '/downloaded';
 
-        $album = preg_replace("#.*\/([^\/]+) \d{4}.*#", "$1", $_SESSION['playlist']);
+        $album = $_SESSION['album'] = preg_replace("#.*\/([^\/]+) \d{4}.*#", "$1", $_SESSION['playlist']);
         $dir .= "/" . $album;
         check_dir($dir);
 
@@ -191,4 +191,40 @@
         }
 
         return 0;
+    }
+
+    function get_archive()
+    {
+        if (class_exists('ZipArchive')) {
+            $zip = new ZipArchive();
+            $album_dir = $_SERVER['DOCUMENT_ROOT'] . '/downloaded/' . $_SESSION['album'] . '/';
+            $archive_dir = $_SERVER['DOCUMENT_ROOT'] . '/archive/';
+            check_dir($archive_dir);
+
+            $archive = $archive_dir . $_SESSION['album'] . '.zip';
+
+            if ($zip->open($archive, ZIPARCHIVE::CREATE) !== true) {
+                var_dump($zip);
+
+                return "ZIP Archive is not created";
+
+            } else {
+                $files = glob($album_dir . "*.mp3");
+
+                foreach ($files as $file) {
+                    $name = preg_replace("#.*\/([^\/]+)$#", "$1", $file);
+
+                    if ($zip->addFile($file, $name)) {
+                        //echo "ok";
+                    }
+                }
+                $zip->close();
+                $link = str_replace($_SERVER['DOCUMENT_ROOT'], "", $archive);
+
+                return "OK|" . $_SESSION['album'] . '|' . $link;
+            }
+
+        } else {
+            return "Archivator ZIP is not installed";
+        }
     }

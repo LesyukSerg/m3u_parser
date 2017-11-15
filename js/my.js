@@ -8,12 +8,15 @@ $(document).ready(function () {
     $('.process').on('click', function(){
         if (!$(this).hasClass("disabled")) {
             stop = 0;
+            $('.loader').fadeIn();
             $(this).addClass('disabled');
             process_start();
         }
     });
 
     $('.stop').on('click', function(){
-        stop = 1;
+        if (!$(this).hasClass("disabled")) {
+            stop = 1;
+        }
     });
 });

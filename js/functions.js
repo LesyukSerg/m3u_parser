@@ -14,7 +14,7 @@ function uploadFile(elem) {
         enctype: 'multipart/form-data',
         processData: false,  // tell jQuery not to process the data
         contentType: false,   // tell jQuery not to set contentType
-        success: function(data) {
+        success: function (data) {
             if (data === "1") {
                 location.reload();
             } else {
@@ -27,7 +27,7 @@ function uploadFile(elem) {
 function process_start() {
     var total = $('.song-item').length;
     var left = $('.song-item:visible').length;
-    var complete = 100 - (left/total)*100;
+    var complete = 100 - (left / total) * 100;
     $('.progress-bar').css('width', complete + '%');
 
     var song = $('.song-item:visible').first();
@@ -35,7 +35,7 @@ function process_start() {
         song.removeClass("alert-info").addClass("alert-warning");
         process(song, 1);
     } else {
-        $('.song-container').append('<div class="alert alert-success"><strong>OK</strong> All songs downloaded</div>');
+        $('.song-container').append('<div class="alert alert-success"><strong>OK</strong> All songs downloaded. </div>');
         $.ajax({
             url: "/process.php",
             type: "POST",
@@ -44,7 +44,15 @@ function process_start() {
                 action: 'complete'
             },
             success: function (data) {
+                data = data.split("|");
 
+                if (data[0] == "OK") {
+                    $('.song-container .alert-success').append('<a target="_blank" href="' + data[2] + '">Download Album <b>' + data[1] + '</b></a>');
+                } else {
+                    alert(data);
+                }
+
+                $('.loader').fadeOut();
             }
         });
     }
@@ -77,6 +85,7 @@ function process(song, recurs) {
             song.fadeOut(400, process_start);
         }
     } else {
+        $('.loader').fadeOut();
         $('.process').removeClass('disabled');
         alert("Process was stopped");
     }
