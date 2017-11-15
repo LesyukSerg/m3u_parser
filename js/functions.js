@@ -33,7 +33,7 @@ function process_start() {
     var song = $('.song-item:visible').first();
     if (song.length) {
         song.removeClass("alert-info").addClass("alert-warning");
-        process(song, 1);
+        process(song);
     } else {
         $('.song-container').append('<div class="alert alert-success"><strong>OK</strong> All songs downloaded. </div>');
         $.ajax({
@@ -46,7 +46,7 @@ function process_start() {
             success: function (data) {
                 data = data.split("|");
 
-                if (data[0] == "OK") {
+                if (data[0] === "OK") {
                     $('.song-container .alert-success').append('<a target="_blank" href="' + data[2] + '">Download Album <b>' + data[1] + '</b></a>');
                 } else {
                     alert(data);
@@ -58,7 +58,7 @@ function process_start() {
     }
 }
 
-function process(song, recurs) {
+function process(song) {
     if (!stop) {
         if (!song.hasClass("alert-success")) {
             var songID = song.data('id');

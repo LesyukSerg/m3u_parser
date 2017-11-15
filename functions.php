@@ -156,9 +156,9 @@
 
             if (file_put_contents($dir . '/' . $file, $songData)) {
                 require_once 'id.php';
-                $id3 = &new MP3_Id(); // создаем объект, считываем данные
+                $id3 = new MP3_Id(); // создаем объект, считываем данные
 
-                $res = $id3->read($dir . '/' . $file);
+                $id3->read($dir . '/' . $file);
                 $songName = explode('-', $song['name']);
 
                 $id3->setTag('track', $song['index']);
