@@ -29,7 +29,7 @@
     // Tip: make sure you use a <PRE> block so the print_r's are readable.
     // define('ID3_SHOW_DEBUG', true);
 
-    require_once $_SERVER['DOCUMENT_ROOT'] . "/pear/PEAR.php";
+    require_once __DIR__ . "/pear/PEAR.php";
 
     /**
      * File not opened

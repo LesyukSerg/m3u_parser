@@ -1,6 +1,8 @@
 <?
     session_start();
     require "functions.php";
+
+    define("DIR", getDir());
     check_playlist();
     $playlist = isset($_SESSION['playlist']);
     $s = [0 => 'info', '1' => 'success', 2 => 'danger', 3 => 'warning'];
@@ -18,15 +20,15 @@
         <title>M3U Downloader</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <script src="/js/jquery.min.js"></script>
+        <script src="<?=DIR?>/js/jquery.min.js"></script>
         <!--<link rel="stylesheet" href="/css/bootstrap.min.css">
         <script src="/js/bootstrap.min.js"></script>-->
-        <link rel="stylesheet" href="/css/m3u.css">
+        <link rel="stylesheet" href="<?=DIR?>/css/m3u.css">
 
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="/js/my.js"></script>
-        <script src="/js/functions.js"></script>
+        <script src="<?=DIR?>/js/my.js"></script>
+        <script src="<?=DIR?>/js/functions.js"></script>
     </head>
     <body>
         <div class="container">

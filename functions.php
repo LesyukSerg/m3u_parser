@@ -49,6 +49,11 @@
         return $output;
     }
 
+    function getDir()
+    {
+        return str_replace($_SERVER['DOCUMENT_ROOT'], "", str_replace("\\", "/", __DIR__));
+    }
+
     function progress($total, $step)
     {
         $total = ceil($total / 2);
@@ -95,7 +100,7 @@
 
     function check_playlist()
     {
-        $source = $_SERVER['DOCUMENT_ROOT'] . "/m3u-files/";
+        $source = __DIR__ . "/m3u-files/";
         $found = glob($source . "*.m3u");
 
         if (isset($found[0])) {
@@ -107,7 +112,7 @@
 
     function move_old_playlist()
     {
-        $source = $_SERVER['DOCUMENT_ROOT'] . "/m3u-files/";
+        $source = __DIR__ . "/m3u-files/";
 
         if (isset($_SESSION['playlist']) && is_file($_SESSION['playlist'])) {
             $name = preg_replace("#.*\/([^\/]+)$#", "$1", $_SESSION['playlist']);
@@ -120,7 +125,7 @@
 
     function load_playlist($file)
     {
-        $source = $_SERVER['DOCUMENT_ROOT'] . "/m3u-files/";
+        $source = __DIR__ . "/m3u-files/";
 
         if (isset($_SESSION['playlist']) && is_file($_SESSION['playlist'])) {
             move_old_playlist();
@@ -139,7 +144,7 @@
 
     function get_song($songID, $year = "2017")
     {
-        $dir = $_SERVER['DOCUMENT_ROOT'] . '/downloaded';
+        $dir = __DIR__ . '/downloaded';
 
         $album = $_SESSION['album'] = preg_replace("#.*\/([^\/]+) \d{4}.*#", "$1", $_SESSION['playlist']);
         $dir .= "/" . $album;
@@ -197,8 +202,8 @@
     {
         if (class_exists('ZipArchive')) {
             $zip = new ZipArchive();
-            $album_dir = $_SERVER['DOCUMENT_ROOT'] . '/downloaded/' . $_SESSION['album'] . '/';
-            $archive_dir = $_SERVER['DOCUMENT_ROOT'] . '/archive/';
+            $album_dir = __DIR__ . '/downloaded/' . $_SESSION['album'] . '/';
+            $archive_dir = __DIR__ . '/archive/';
             check_dir($archive_dir);
 
             $archive = $archive_dir . $_SESSION['album'] . '.zip';
