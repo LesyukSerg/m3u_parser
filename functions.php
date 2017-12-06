@@ -86,6 +86,9 @@
                     $name = preg_replace("#\#EXTINF\:\d+,#", "", $data[$k - 1]);
                     $name = trim($name);
                     if (!isset($_SESSION['songs'][$name])) {
+                        $name = str_replace(["\\", "/", ":", "|", "Criminal Tribe ltd.", "Wolfpack Recordings -", "free download", "_"], "", $name);
+                        $name = trim(preg_replace("#\[[^[]+\]#", "", $name));
+
                         $_SESSION['songs'][$name] = [
                             'index'  => ++$number,
                             'name'   => $name,
@@ -158,9 +161,9 @@
         $_SESSION['songs'][$songID]['status'] = 3;
 
         $file = $song['name'] . '.mp3';
-        $file = str_replace(["\\", "/", ":"], "", $file);
+        $file = str_replace(["\\", "/", ":", "|"], "", $file);
 
-        if (!file_exists($dir . '/' . $file)) {
+        if (!file_exists($dir . '/' . trim($file))) {
             $songData = curl(trim($song['link']));
 
             if (file_put_contents($dir . '/' . $file, $songData)) {

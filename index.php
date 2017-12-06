@@ -1,8 +1,8 @@
 <?
     session_start();
     require "functions.php";
-
     define("DIR", getDir());
+    //unset($_SESSION['songs']);
     check_playlist();
     $playlist = isset($_SESSION['playlist']);
     $s = [0 => 'info', '1' => 'success', 2 => 'danger', 3 => 'warning'];
